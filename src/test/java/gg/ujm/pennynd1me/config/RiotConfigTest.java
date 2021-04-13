@@ -21,7 +21,7 @@ public class RiotConfigTest {
     @Test
     public void 프로퍼티_파일_읽기() {
         //given
-        String url = "https://kr.api.riotgames.com";
+        String url = "https://kr.api.riotgames.com/";
         //when
         String configUrl = riotConfig.getUrl();
         //then
