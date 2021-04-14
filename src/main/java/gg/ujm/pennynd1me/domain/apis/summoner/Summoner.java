@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -14,13 +13,18 @@ import javax.persistence.Id;
 public class Summoner extends BaseTimeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long no;
+
+    @Column(unique = true)
     private String accountId;
-    private int profileIconId;
-    private long revisionDate;
+
+    private Integer profileIconId;
+    private Long revisionDate;
     private String name;
     private String id;
     private String puuid;
-    private long summonerLevel;
+    private Long summonerLevel;
 
     @Builder
     public Summoner(String accountId, int profileIconId, long revisionDate, String name, String id, String puuid, long summonerLevel) {
@@ -32,4 +36,14 @@ public class Summoner extends BaseTimeEntity {
         this.puuid = puuid;
         this.summonerLevel = summonerLevel;
     }
+
+    public void update(int profileIconId, long revisionDate, String name, String id, String puuid, long summonerLevel) {
+        this.profileIconId = profileIconId;
+        this.revisionDate = revisionDate;
+        this.name = name;
+        this.id = id;
+        this.puuid = puuid;
+        this.summonerLevel = summonerLevel;
+    }
+
 }
