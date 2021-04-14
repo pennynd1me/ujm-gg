@@ -5,8 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-
-{{name}}
+{{#summoner.name}}
+    소환사명: {{summoner.name}}<br>
+    {{#summoner.profileIconId}}
+        소환사 프로필 아이콘: {{summoner.profileIconId}}<br>
+        {{#summoner.summonerLevel}}
+            소환사 레벨: {{summoner.summonerLevel}}<br>
+        {{/summoner.summonerLevel}}
+    {{/summoner.profileIconId}}
+{{/summoner.name}}
+{{^summoner.name}}
+    그런 소환사는 없어용
+{{/summoner.name}}
 
 </body>
 </html>
