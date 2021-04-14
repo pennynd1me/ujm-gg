@@ -1,23 +1,28 @@
 package gg.ujm.pennynd1me.web;
 
-import gg.ujm.pennynd1me.domain.apis.dto.SummonerDTO;
-import gg.ujm.pennynd1me.domain.apis.summoner.Summoner;
-import gg.ujm.pennynd1me.service.SummonerApi;
+import gg.ujm.pennynd1me.service.SummonerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RequiredArgsConstructor
 @Controller
 public class SummonerController {
 
-    private final SummonerApi summonerApi;
+    private final SummonerService summonerService;
 
-    @PostMapping("/api/summoner/{summonerName}/refresh")
-    public String refresh(@PathVariable String summonerName, @RequestBody SummonerDTO summoner) {
-        summonerApi.refresh();
-        return "#";
+    @GetMapping("/summoner/{summonerName}")
+    public String summoner(Model model, @PathVariable String summonerName) {
+        model.addAttribute("summoner", summonerService.findByName(summonerName));
+        return "summoner";
+    }
+
+    @PostMapping("/summoner/{summonerName}")
+    public String summonerPost(Model model, @PathVariable String summonerName) {
+
+        return "summoner";
     }
 }
