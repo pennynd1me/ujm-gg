@@ -18,35 +18,28 @@ public class SummonerService {
     private final APIService apiService;
 
     @Transactional
+    public SummonerResponseDTO findByName(String name) {
+        Summoner summoner = summonerRepository.findTopByNameIgnoreCaseOrderByModifiedDateDesc(name.replaceAll("[\\+]+", " "))
+                // DB에서 이름으로 찾지 못하면, riot api 요청
+                .orElseGet(() -> apiService.summonerByName(name).toEntity());
+        if (!summoner.getAccountId().equals("invalid")) {
+            summonerRepository.save(summoner);
+        }
+
+        return new SummonerResponseDTO(summoner);
+    }
+
+    @Transactional
     public String save(SummonerDTO summonerDTO) {
         return summonerRepository.save(summonerDTO.toEntity()).getAccountId();
     }
 
     @Transactional
-    public String update(String accountId, SummonerUpdateDTO summonerUpdateDto) {
+    public String update(String accountId, String name, SummonerUpdateDTO summonerUpdateDTO) {
         Summoner summoner = summonerRepository.findById(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 소환사가 없습니다. id" + accountId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 소환사가 없습니다. no=" + accountId));
 
-        summoner.update(summonerUpdateDto.getProfileIconId(), summonerUpdateDto.getRevisionDate(), summonerUpdateDto.getName(), summonerUpdateDto.getId(), summonerUpdateDto.getPuuid(), summonerUpdateDto.getSummonerLevel());
+//        summoner.update();
         return accountId;
-    }
-
-    public String findByNameToGetAccountId(String name) {
-        Summoner summoner = summonerRepository.findByName(name)
-                // DB에서 이름으로 찾지 못하면, riot api에서 이름으로 검색해서 getAccountId()
-                .orElseGet(() -> apiService.summonerByName(name).toEntity());
-
-        return summoner.getAccountId();
-    }
-
-    @Transactional
-    public SummonerResponseDTO findByName(String name) {
-        Summoner entity = summonerRepository.findByName(name)
-                // DB에서 이름으로 찾지 못하면, riot api에서 이름으로 검색하고 db에 저장한다.
-                .orElseGet(() -> apiService.summonerByName(name).toEntity());
-        if (entity.getName() != null) {
-            summonerRepository.save(entity);
-        }
-        return new SummonerResponseDTO(entity);
     }
 }
