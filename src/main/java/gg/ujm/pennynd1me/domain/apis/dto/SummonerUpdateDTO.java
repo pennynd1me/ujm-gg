@@ -13,16 +13,14 @@ public class SummonerUpdateDTO {
     private long revisionDate;
     private String name;
     private String id;
-    private String puuid;
     private long summonerLevel;
 
     @Builder
-    public SummonerUpdateDTO(int profileIconId, long revisionDate, String name, String id, String puuid, long summonerLevel) {
+    public SummonerUpdateDTO(int profileIconId, long revisionDate, String name, String id, long summonerLevel) {
         this.profileIconId = profileIconId;
         this.revisionDate = revisionDate;
         this.name = name;
         this.id = id;
-        this.puuid = puuid;
         this.summonerLevel = summonerLevel;
     }
 
@@ -32,7 +30,6 @@ public class SummonerUpdateDTO {
                 .revisionDate(revisionDate)
                 .name(name)
                 .id(id)
-                .puuid(puuid)
                 .summonerLevel(summonerLevel)
                 .build();
 

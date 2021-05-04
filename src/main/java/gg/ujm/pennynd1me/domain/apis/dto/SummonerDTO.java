@@ -30,10 +30,14 @@ public class SummonerDTO implements Serializable {
         this.puuid = puuid;
         this.summonerLevel = summonerLevel;
     }
+    // api 호출시 DB에 없을 때: accountId에 "invalid" 담아서 생성
+    public SummonerDTO(String accountId) {
+        this.accountId = accountId;
+    }
 
     public Summoner toEntity() {
         return Summoner.builder()
-                .accountId(id)
+                .accountId(accountId)
                 .profileIconId(profileIconId)
                 .revisionDate(revisionDate)
                 .name(name)

@@ -1,17 +1,20 @@
 package gg.ujm.pennynd1me.domain.apis.dto;
 
-import gg.ujm.pennynd1me.domain.apis.league.League;
+import gg.ujm.pennynd1me.domain.apis.league.LeagueEntry;
+import gg.ujm.pennynd1me.domain.apis.league.MiniSeries;
+import gg.ujm.pennynd1me.domain.apis.summoner.Summoner;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-public class LeagueDTO implements Serializable {
+public class LeagueEntryDTO implements Serializable {
 
     private String leagueId;
     private String summonerId;
@@ -27,27 +30,10 @@ public class LeagueDTO implements Serializable {
     private boolean freshBlood;
     private boolean inactive;
 
-    private List<MiniSeriesDTO> miniSeries;
-
-    @Getter
-    @NoArgsConstructor
-    public class MiniSeriesDTO implements Serializable {
-
-        private int losses;
-        private String progress;
-        private int target;
-        private int wins;
-
-        public MiniSeriesDTO(int losses, String progress, int target, int wins) {
-            this.losses = losses;
-            this.progress = progress;
-            this.target = target;
-            this.wins = wins;
-        }
-    }
+    private MiniSeries miniSeries;
 
     @Builder
-    public LeagueDTO(String leagueId, String summonerId, String summonerName, String queueType, String tier, String rank, int leaguePoints, int wins, int losses, boolean hotStreak, boolean veteran, boolean freshBlood, boolean inactive, List<MiniSeriesDTO> miniSeries) {
+    public LeagueEntryDTO(String leagueId, String summonerId, String summonerName, String queueType, String tier, String rank, int leaguePoints, int wins, int losses, boolean hotStreak, boolean veteran, boolean freshBlood, boolean inactive, MiniSeries miniSeries) {
         this.leagueId = leagueId;
         this.summonerId = summonerId;
         this.summonerName = summonerName;
@@ -64,10 +50,15 @@ public class LeagueDTO implements Serializable {
         this.miniSeries = miniSeries;
     }
 
-    public League toEntity() {
-        return League.builder()
+    // api 호출시 DB에 없을 때: leagueId에 "invalid" 담아서 생성
+    public LeagueEntryDTO(String leagueId) {
+        this.leagueId = leagueId;
+    }
+
+    public LeagueEntry toEntity() {
+        return LeagueEntry.builder()
                 .leagueId(leagueId)
-                .summonerId(summonerId)
+//                .summoner(summonerId)
                 .summonerName(summonerName)
                 .queueType(queueType)
                 .tier(tier)
@@ -79,7 +70,8 @@ public class LeagueDTO implements Serializable {
                 .veteran(veteran)
                 .freshBlood(freshBlood)
                 .inactive(inactive)
+                .miniSeries(miniSeries)
                 .build();
-
     }
+
 }

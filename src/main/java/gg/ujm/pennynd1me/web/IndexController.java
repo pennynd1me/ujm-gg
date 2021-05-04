@@ -16,9 +16,11 @@ public class IndexController {
     }
 
     @GetMapping("/summoner")
-    public String search(@RequestParam("name") String name) throws UnsupportedEncodingException {
+    public String search(@RequestParam(value = "name", required = false) String name) throws UnsupportedEncodingException {
+        if (name == null || name.isEmpty()) {
+            return "redirect:/";
+        }
         String encoded = URLEncoder.encode(name, "UTF-8");
-        encoded = encoded.replaceAll(" ", "%20");
         return "redirect:summoner/" + encoded;
     }
 

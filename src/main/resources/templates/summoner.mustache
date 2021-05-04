@@ -8,15 +8,28 @@
 {{#summoner.name}}
     소환사명: {{summoner.name}}<br>
     {{#summoner.profileIconId}}
-        소환사 프로필 아이콘: {{summoner.profileIconId}}<br>
+        소환사 프로필 아이콘: <img
+                src="http://ddragon.leagueoflegends.com/cdn/11.8.1/img/profileicon/{{summoner.profileIconId}}.png"
+                alt="프로필 아이콘"><br>
         {{#summoner.summonerLevel}}
             소환사 레벨: {{summoner.summonerLevel}}<br>
         {{/summoner.summonerLevel}}
     {{/summoner.profileIconId}}
 {{/summoner.name}}
 {{^summoner.name}}
-    그런 소환사는 없어용
+    그런 소환사는 없어용<br>
+    닉네임을 변경한 지 얼마 안되었다면 잠시 후 시도해주세요.
 {{/summoner.name}}
 
+{{#league}}
+    {{league}}
+{{/league}}
+{{^league}}
+    리그 정보 못불러옴
+{{/league}}
+<br>
+<form action="" method="post">
+    <button type="submit" name="refresh">갱신</button>
+</form>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package gg.ujm.pennynd1me.domain.apis.match;
 
 import gg.ujm.pennynd1me.domain.apis.summoner.Summoner;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,5 +24,18 @@ public class MatchReference {
     private Long timestamp;
     private String role;
     private String lane;
+
+    @Builder
+    public MatchReference(Long gameId, Summoner accountId, Integer champion, String platformId, Integer queue, Integer season, Long timestamp, String role, String lane) {
+        this.gameId = gameId;
+        this.accountId = accountId;
+        this.champion = champion;
+        this.platformId = platformId;
+        this.queue = queue;
+        this.season = season;
+        this.timestamp = timestamp;
+        this.role = role;
+        this.lane = lane;
+    }
 }
 

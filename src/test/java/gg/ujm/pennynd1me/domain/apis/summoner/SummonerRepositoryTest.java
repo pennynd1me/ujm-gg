@@ -1,30 +1,23 @@
 package gg.ujm.pennynd1me.domain.apis.summoner;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SummonerRepositoryTest {
 
     @Autowired
     SummonerRepository summonerRepository;
 
-    @AfterEach
-    public void cleanup() {
-        summonerRepository.deleteAll();
-    }
-
     @Test
-    public void 소환사저장_불러오기() {
+    public void 소환사_저장_불러오기() {
         //given
         String accountId = "asdasd";
         int profileIconId = 564;
@@ -46,8 +39,13 @@ public class SummonerRepositoryTest {
         List<Summoner> summonerList = summonerRepository.findAll();
         //then
         Summoner summoners = summonerList.get(0);
-        Assertions.assertThat(summoners.getSummonerLevel()).isEqualTo(summonerLevel);
+        Assertions.assertThat(summoners.getId()).isEqualTo(id);
         Assertions.assertThat(summoners.getAccountId()).isEqualTo(accountId);
+        Assertions.assertThat(summoners.getName()).isEqualTo(name);
+        Assertions.assertThat(summoners.getProfileIconId()).isEqualTo(profileIconId);
+        Assertions.assertThat(summoners.getPuuid()).isEqualTo(puuid);
+        Assertions.assertThat(summoners.getRevisionDate()).isEqualTo(revisionDate);
+        Assertions.assertThat(summoners.getSummonerLevel()).isEqualTo(summonerLevel);
     }
 
     @Test
@@ -73,5 +71,61 @@ public class SummonerRepositoryTest {
 
         Assertions.assertThat(summoner.getCreatedDate()).isAfter(now);
         Assertions.assertThat(summoner.getModifiedDate()).isAfter(now);
+    }
+
+    @Test
+    public void 띄어쓰기_IgnoreCase_조회() {
+        //given
+        String accountId = "asdasd";
+        int profileIconId = 564;
+        long revisionDate = 292929L;
+        String name = "Hide on bush";
+        String id = "asdasd";
+        String puuid = "asdasd";
+        long summonerLevel = 123;
+        summonerRepository.save(Summoner.builder()
+                .id(id)
+                .accountId(accountId)
+                .name(name)
+                .profileIconId(profileIconId)
+                .puuid(puuid)
+                .revisionDate(revisionDate)
+                .summonerLevel(summonerLevel)
+                .build());
+        //when
+        name = "hIde oN buSh";
+        String finalName = name;
+        Summoner summoner1 = summonerRepository.findTopByNameIgnoreCaseOrderByModifiedDateDesc(name)
+                .orElseThrow(() -> new IllegalArgumentException("안돼"));
+        //then
+        Assertions.assertThat(summoner1.getName()).isEqualToIgnoringCase(name);
+    }
+
+    @Test
+    public void 닉네임으로_accountId조회() {
+        //given
+        String accountId = "fakeraccountId";
+        int profileIconId = 564;
+        long revisionDate = 292929L;
+        String name = "Hide on bush";
+        String id = "asdasd";
+        String puuid = "asdasd";
+        long summonerLevel = 123;
+        summonerRepository.save(Summoner.builder()
+                .id(id)
+                .accountId(accountId)
+                .name(name)
+                .profileIconId(profileIconId)
+                .puuid(puuid)
+                .revisionDate(revisionDate)
+                .summonerLevel(summonerLevel)
+                .build());
+        //when
+        name = "hIdeOnBUS h";
+        String finalName = name;
+        String result = summonerRepository.findByNameIgnoreCaseToGetAccountId(name)
+                .orElseThrow(() -> new IllegalArgumentException("안돼"));
+        //then
+        Assertions.assertThat(result).isEqualToIgnoringCase(accountId);
     }
 }
